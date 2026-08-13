@@ -1,0 +1,9 @@
+mss
+Pillow
+fastapi
+uvicorn
+httpx
+python-multipart
+python-dotenv
+jinja2
+pydantic

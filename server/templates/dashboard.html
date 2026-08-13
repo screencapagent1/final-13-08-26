@@ -1,0 +1,2553 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Remote Screenshot Dashboard
+    </title>
+
+
+    <style>
+
+        * {
+
+            box-sizing:
+                border-box;
+
+        }
+
+
+        body {
+
+            margin:
+                0;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            background:
+                #f5f7fb;
+
+            color:
+                #111827;
+
+        }
+
+
+        /* =====================================================
+           Layout
+        ====================================================== */
+
+        .app {
+
+            display:
+                flex;
+
+            min-height:
+                100vh;
+
+        }
+
+
+        /* =====================================================
+           Sidebar
+        ====================================================== */
+
+        .sidebar {
+
+            width:
+                240px;
+
+            background:
+                #111827;
+
+            color:
+                white;
+
+            padding:
+                24px 16px;
+
+            position:
+                fixed;
+
+            top:
+                0;
+
+            bottom:
+                0;
+
+            left:
+                0;
+
+        }
+
+
+        .logo {
+
+            font-size:
+                20px;
+
+            font-weight:
+                bold;
+
+            margin-bottom:
+                40px;
+
+        }
+
+
+        .logo span {
+
+            color:
+                #3b82f6;
+
+        }
+
+
+        .nav-item {
+
+            padding:
+                13px 14px;
+
+            margin-bottom:
+                8px;
+
+            border-radius:
+                8px;
+
+            color:
+                #d1d5db;
+
+            cursor:
+                pointer;
+
+        }
+
+
+        .nav-item:hover {
+
+            background:
+                #1f2937;
+
+            color:
+                white;
+
+        }
+
+
+        .nav-item.active {
+
+            background:
+                #2563eb;
+
+            color:
+                white;
+
+        }
+
+
+        /* =====================================================
+           Main Content
+        ====================================================== */
+
+        .main {
+
+            margin-left:
+                240px;
+
+            width:
+                calc(
+                    100% - 240px
+                );
+
+            padding:
+                28px;
+
+        }
+
+
+        .topbar {
+
+            display:
+                flex;
+
+            justify-content:
+                space-between;
+
+            align-items:
+                center;
+
+            margin-bottom:
+                28px;
+
+        }
+
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+
+        .topbar h1 {
+
+            margin:
+                0;
+
+            font-size:
+                28px;
+
+        }
+
+
+        .topbar p {
+
+            margin:
+                6px 0 0;
+
+            color:
+                #6b7280;
+
+        }
+
+
+        /* =====================================================
+           Summary Cards
+        ====================================================== */
+
+        .summary-grid {
+
+            display:
+                grid;
+
+            grid-template-columns:
+                repeat(
+                    4,
+                    1fr
+                );
+
+            gap:
+                18px;
+
+            margin-bottom:
+                24px;
+
+        }
+
+
+        .summary-card {
+
+            background:
+                white;
+
+            border-radius:
+                12px;
+
+            padding:
+                20px;
+
+            box-shadow:
+                0 2px 8px
+                rgba(
+                    0,
+                    0,
+                    0,
+                    0.06
+                );
+
+        }
+
+
+        .summary-title {
+
+            color:
+                #6b7280;
+
+            font-size:
+                14px;
+
+            margin-bottom:
+                10px;
+
+        }
+
+
+        .summary-value {
+
+            font-size:
+                28px;
+
+            font-weight:
+                bold;
+
+        }
+
+
+        .online-value {
+
+            color:
+                #16a34a;
+
+        }
+
+
+        .offline-value {
+
+            color:
+                #dc2626;
+
+        }
+
+
+        /* =====================================================
+           Panels
+        ====================================================== */
+
+        .panel {
+
+            background:
+                white;
+
+            border-radius:
+                12px;
+
+            padding:
+                22px;
+
+            margin-bottom:
+                24px;
+
+            box-shadow:
+                0 2px 8px
+                rgba(
+                    0,
+                    0,
+                    0,
+                    0.06
+                );
+
+        }
+
+
+        .panel-header {
+
+            display:
+                flex;
+
+            justify-content:
+                space-between;
+
+            align-items:
+                center;
+
+            margin-bottom:
+                20px;
+
+        }
+
+
+        .panel-header h2 {
+
+            margin:
+                0;
+
+            font-size:
+                20px;
+
+        }
+
+
+        /* =====================================================
+           Authentication
+        ====================================================== */
+
+        .auth-row {
+
+            display:
+                flex;
+
+            gap:
+                12px;
+
+        }
+
+
+        .auth-row input {
+
+            flex:
+                1;
+
+            padding:
+                12px 14px;
+
+            border:
+                1px solid
+                #d1d5db;
+
+            border-radius:
+                8px;
+
+            font-size:
+                14px;
+
+        }
+
+
+        /* =====================================================
+           Search
+        ====================================================== */
+
+        .search-row {
+
+            display:
+                flex;
+
+            gap:
+                12px;
+
+        }
+
+
+        .search-row input {
+
+            width:
+                400px;
+
+            padding:
+                12px 14px;
+
+            border:
+                1px solid
+                #d1d5db;
+
+            border-radius:
+                8px;
+
+            font-size:
+                14px;
+
+        }
+
+
+        /* =====================================================
+           Buttons
+        ====================================================== */
+
+        button {
+
+            border:
+                none;
+
+            border-radius:
+                7px;
+
+            padding:
+                10px 16px;
+
+            background:
+                #2563eb;
+
+            color:
+                white;
+
+            font-weight:
+                600;
+
+            cursor:
+                pointer;
+
+        }
+
+
+        button:hover {
+
+            background:
+                #1d4ed8;
+
+        }
+
+
+        .secondary-button {
+
+            background:
+                #6b7280;
+
+        }
+
+
+        .secondary-button:hover {
+
+            background:
+                #4b5563;
+
+        }
+
+
+        /* =====================================================
+           Search Result
+        ====================================================== */
+
+        #searchResult {
+
+            margin-top:
+                18px;
+
+        }
+
+
+        .search-result-card {
+
+            border:
+                1px solid
+                #e5e7eb;
+
+            border-radius:
+                8px;
+
+            padding:
+                16px;
+
+            background:
+                #f9fafb;
+
+        }
+
+
+        .search-result-card p {
+
+            margin:
+                8px 0;
+
+        }
+
+
+        /* =====================================================
+           Tables
+        ====================================================== */
+
+        table {
+
+            width:
+                100%;
+
+            border-collapse:
+                collapse;
+
+        }
+
+
+        th {
+
+            text-align:
+                left;
+
+            background:
+                #f3f4f6;
+
+            padding:
+                14px;
+
+            font-size:
+                14px;
+
+        }
+
+
+        td {
+
+            padding:
+                15px 14px;
+
+            border-bottom:
+                1px solid
+                #e5e7eb;
+
+            font-size:
+                14px;
+
+        }
+
+
+        /* =====================================================
+           Status
+        ====================================================== */
+
+        .status-badge {
+
+            display:
+                inline-block;
+
+            padding:
+                5px 10px;
+
+            border-radius:
+                20px;
+
+            font-size:
+                12px;
+
+            font-weight:
+                bold;
+
+        }
+
+
+        .status-online {
+
+            background:
+                #dcfce7;
+
+            color:
+                #15803d;
+
+        }
+
+
+        .status-offline {
+
+            background:
+                #fee2e2;
+
+            color:
+                #b91c1c;
+
+        }
+
+
+        /* =====================================================
+           Message
+        ====================================================== */
+
+        #message {
+
+            position:
+                fixed;
+
+            bottom:
+                24px;
+
+            right:
+                24px;
+
+            background:
+                #111827;
+
+            color:
+                white;
+
+            padding:
+                14px 18px;
+
+            border-radius:
+                8px;
+
+            display:
+                none;
+
+            z-index:
+                1000;
+
+        }
+
+
+        /* =====================================================
+           Responsive
+        ====================================================== */
+
+        @media (
+
+            max-width:
+            1000px
+
+        ) {
+
+
+            .summary-grid {
+
+                grid-template-columns:
+                    repeat(
+                        2,
+                        1fr
+                    );
+
+            }
+
+        }
+
+
+        @media (
+
+            max-width:
+            700px
+
+        ) {
+
+
+            .sidebar {
+
+                display:
+                    none;
+
+            }
+
+
+            .main {
+
+                margin-left:
+                    0;
+
+                width:
+                    100%;
+
+                padding:
+                    16px;
+
+            }
+
+
+            .summary-grid {
+
+                grid-template-columns:
+                    1fr;
+
+            }
+
+
+            .auth-row,
+            .search-row {
+
+                flex-direction:
+                    column;
+
+            }
+
+
+            .search-row input {
+
+                width:
+                    100%;
+
+            }
+
+
+            table {
+
+                display:
+                    block;
+
+                overflow-x:
+                    auto;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="app">
+
+
+    <!-- =====================================================
+         Sidebar
+    ====================================================== -->
+
+    <aside class="sidebar">
+
+    <div class="logo">
+
+        Remote
+        <span>
+            Capture
+        </span>
+
+    </div>
+
+    <div
+        class="nav-item active"
+        id="navDashboard"
+        onclick="showPage('dashboard')"
+    >
+        Dashboard
+    </div>
+
+    <div
+        class="nav-item"
+        id="navComputers"
+        onclick="showPage('computers')"
+    >
+        Computers
+    </div>
+
+    <div
+        class="nav-item"
+        id="navScreenshots"
+        onclick="showPage('screenshots')"
+    >
+        Screenshots
+    </div>
+
+    </aside>
+
+
+    <!-- =====================================================
+         Main Content
+    ====================================================== -->
+
+    <main class="main">
+        <section id="dashboardPage" class="page active">
+
+        <!-- =================================================
+             Header
+        ================================================== -->
+
+        <div class="topbar">
+
+
+            <div>
+
+                <h1>
+
+                    Dashboard
+
+                </h1>
+
+
+                <p>
+
+                    Monitor computers and request remote screenshots.
+
+                </p>
+
+            </div>
+
+
+            <button
+
+                onclick="loadAgents()"
+
+            >
+
+                Refresh
+
+            </button>
+
+
+        </div>
+
+
+        <!-- =================================================
+             Summary Cards
+        ================================================== -->
+
+        <div class="summary-grid">
+
+
+            <div class="summary-card">
+
+
+                <div class="summary-title">
+
+                    Total Computers
+
+                </div>
+
+
+                <div
+
+                    class="summary-value"
+
+                    id="totalComputers"
+
+                >
+
+                    0
+
+                </div>
+
+
+            </div>
+
+
+            <div class="summary-card">
+
+
+                <div class="summary-title">
+
+                    Online
+
+                </div>
+
+
+                <div
+
+                    class="summary-value online-value"
+
+                    id="onlineComputers"
+
+                >
+
+                    0
+
+                </div>
+
+
+            </div>
+
+
+            <div class="summary-card">
+
+
+                <div class="summary-title">
+
+                    Offline
+
+                </div>
+
+
+                <div
+
+                    class="summary-value offline-value"
+
+                    id="offlineComputers"
+
+                >
+
+                    0
+
+                </div>
+
+
+            </div>
+
+
+            <div class="summary-card">
+
+
+                <div class="summary-title">
+
+                    Screenshots
+
+                </div>
+
+
+                <div
+
+                    class="summary-value"
+
+                    id="totalScreenshots"
+
+                >
+
+                    0
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+        <!-- =================================================
+             Authentication
+        ================================================== -->
+
+        <div class="panel">
+
+
+            <div class="panel-header">
+
+
+                <h2>
+
+                    Authentication
+
+                </h2>
+
+
+            </div>
+
+
+            <div class="auth-row">
+
+
+                <input
+
+                    type="password"
+
+                    id="apiKey"
+
+                    placeholder="Enter API Key"
+
+                >
+
+
+                <button
+
+                    onclick="loadAgents()"
+
+                >
+
+                    Load Agents
+
+                </button>
+
+
+            </div>
+
+
+        </div>
+
+
+        <!-- =================================================
+             Search Computer By IP
+        ================================================== -->
+
+        <div class="panel">
+
+
+            <div class="panel-header">
+
+
+                <h2>
+
+                    Search Computer
+
+                </h2>
+
+
+            </div>
+
+
+            <div class="search-row">
+
+
+                <input
+
+                    type="text"
+
+                    id="systemIp"
+
+                    placeholder="Enter system IP address"
+
+                >
+
+
+                <button
+
+                    onclick="searchAgentByIp()"
+
+                >
+
+                    Search
+
+                </button>
+
+
+            </div>
+
+
+            <div id="searchResult"></div>
+
+        </div>
+        <div class="panel">
+
+    <div class="panel-header">
+
+        <h2>Online Computers</h2>
+
+    </div>
+
+    <div id="dashboardAgents">
+
+        No online computers.
+
+    </div>
+
+</div>
+</section>
+        <!-- =================================================
+             Registered Computers
+        ================================================== -->
+
+        <section id="computersPage" class="page">
+
+            <div class="panel">
+
+                <div class="panel-header">
+
+                    <h2>
+                        Registered Computers
+                    </h2>
+
+                    <button
+                        class="secondary-button"
+                        onclick="loadAgents()"
+                    >
+                        Refresh
+                    </button>
+
+                </div>
+
+                <div id="agents">
+
+                    No computers loaded.
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- =================================================
+             Screenshots
+        ================================================== -->
+
+<section id="screenshotsPage" class="page">
+
+    <div class="panel">
+
+        <div class="panel-header">
+
+    <h2 id="screenshotTitle">
+        All Screenshots
+    </h2>
+
+    <div>
+
+        <button
+            class="secondary-button"
+            onclick="showAllScreenshots()"
+        >
+            Show All
+        </button>
+
+        <button
+            class="secondary-button"
+            onclick="loadScreenshots()"
+        >
+            Refresh
+        </button>
+
+    </div>
+
+</div>
+
+            <div id="screenshots">
+
+    No screenshots loaded.
+
+</div>
+
+    </div>
+
+        </section>
+
+</main>
+
+
+</div>
+
+
+<div id="message"></div>
+
+
+<script>
+
+
+// ============================================================
+// Global Variables
+// ============================================================
+
+let apiKey = "";
+
+let agentsData = [];
+
+
+// ============================================================
+// Show Message
+// ============================================================
+
+function showMessage(
+
+    message
+
+) {
+
+
+    const messageElement =
+
+        document.getElementById(
+
+            "message"
+
+        );
+
+
+    messageElement.innerText =
+
+        message;
+
+
+    messageElement.style.display =
+
+        "block";
+
+
+    setTimeout(
+
+        () => {
+
+            messageElement.style.display =
+
+                "none";
+
+        },
+
+        3000
+
+    );
+
+}
+
+
+// ============================================================
+// Load Agents
+// ============================================================
+
+async function loadAgents() {
+
+
+    const inputKey =
+
+        document.getElementById(
+
+            "apiKey"
+
+        ).value;
+
+
+    if (
+
+        inputKey
+
+    ) {
+
+        apiKey = inputKey;
+
+    }
+
+
+    if (
+
+        !apiKey
+
+    ) {
+
+        showMessage(
+
+            "Please enter the API key."
+
+        );
+
+
+        return;
+
+    }
+
+
+    try {
+
+
+        const response =
+
+            await fetch(
+
+                "/admin/agents",
+
+                {
+
+                    headers: {
+
+                        "X-API-Key":
+
+                            apiKey
+
+                    }
+
+                }
+
+            );
+
+
+        if (
+
+            !response.ok
+
+        ) {
+
+
+            throw new Error(
+
+                "Failed to load computers."
+
+            );
+
+        }
+
+
+        agentsData =
+
+            await response.json();
+
+
+       renderAgents(agentsData);
+
+       updateSummary(agentsData);
+
+       const onlineAgents = agentsData.filter(
+       agent => agent.status === "online"
+       );
+
+renderDashboardAgents(onlineAgents);
+
+        await loadScreenshots();
+
+
+        showMessage(
+
+            "Computers loaded successfully."
+
+        );
+
+
+    }
+
+    catch (
+
+        error
+
+    ) {
+
+
+        showMessage(
+
+            error.message
+
+        );
+
+    }
+
+}
+
+
+// ============================================================
+// Update Summary
+// ============================================================
+
+function updateSummary(
+
+    agents
+
+) {
+
+
+    const total =
+
+        agents.length;
+
+
+    const online =
+
+        agents.filter(
+
+            agent =>
+
+                agent.status ===
+
+                "online"
+
+        ).length;
+
+
+    const offline =
+
+        total -
+
+        online;
+
+
+    document.getElementById(
+
+        "totalComputers"
+
+    ).innerText =
+
+        total;
+
+
+    document.getElementById(
+
+        "onlineComputers"
+
+    ).innerText =
+
+        online;
+
+
+    document.getElementById(
+
+        "offlineComputers"
+
+    ).innerText =
+
+        offline;
+
+}
+
+
+// ============================================================
+// Render Registered Agents
+// ============================================================
+
+function renderAgents(
+
+    agents
+
+) {
+
+
+    if (
+
+        agents.length === 0
+
+    ) {
+
+
+        document.getElementById(
+
+            "agents"
+
+        ).innerHTML =
+
+            "No registered computers.";
+
+
+        return;
+
+    }
+
+
+    let html = `
+
+<table>
+
+<tr>
+
+<th>Agent ID</th>
+
+<th>System IP</th>
+
+<th>Status</th>
+
+<th>Last Seen</th>
+
+<th>Action</th>
+
+</tr>
+
+`;
+
+
+    agents.forEach(
+
+        agent => {
+
+
+            const statusClass =
+
+                agent.status ===
+
+                "online"
+
+                    ? "status-online"
+
+                    : "status-offline";
+
+
+            html += `
+
+<tr>
+
+<td>
+
+${agent.agent_id}
+
+</td>
+
+
+<td>
+
+${agent.ip_address || "Unknown"}
+
+</td>
+
+
+<td>
+
+<span class="status-badge ${statusClass}">
+
+${agent.status}
+
+</span>
+
+</td>
+
+
+<td>
+
+${agent.last_seen}
+
+</td>
+
+
+<td>
+
+
+<button
+    onclick="requestScreenshot(
+        '${agent.agent_id}'
+    )"
+>
+Request Screenshot
+</button>
+
+<button
+    class="secondary-button"
+    onclick="showAgentScreenshots(
+        '${agent.agent_id}'
+    )"
+>
+View Screenshots
+</button>
+
+
+</td>
+
+</tr>
+
+`;
+
+        }
+
+    );
+
+
+    html += `
+
+</table>
+
+`;
+
+
+    document.getElementById(
+
+        "agents"
+
+    ).innerHTML =
+
+        html;
+
+}
+
+
+// ============================================================
+// Search Agent By IP
+// ============================================================
+
+function searchAgentByIp() {
+
+
+    const ip =
+
+        document.getElementById(
+
+            "systemIp"
+
+        ).value.trim();
+
+
+    if (
+
+        !ip
+
+    ) {
+
+
+        showMessage(
+
+            "Enter a system IP address."
+
+        );
+
+
+        return;
+
+    }
+
+
+    const agent =
+
+        agentsData.find(
+
+            item =>
+
+                item.ip_address ===
+
+                ip
+
+        );
+
+
+    const resultElement =
+
+        document.getElementById(
+
+            "searchResult"
+
+        );
+
+
+    if (
+
+        !agent
+
+    ) {
+
+
+        resultElement.innerHTML = `
+
+<div class="search-result-card">
+
+No agent found for IP:
+
+<strong>
+
+${ip}
+
+</strong>
+
+</div>
+
+`;
+
+
+        return;
+
+    }
+
+
+    const statusClass =
+
+        agent.status ===
+
+        "online"
+
+            ? "status-online"
+
+            : "status-offline";
+
+
+    resultElement.innerHTML = `
+
+<div class="search-result-card">
+
+
+<p>
+
+<strong>
+
+Agent ID:
+
+</strong>
+
+${agent.agent_id}
+
+</p>
+
+
+<p>
+
+<strong>
+
+System IP:
+
+</strong>
+
+${agent.ip_address}
+
+</p>
+
+
+<p>
+
+<strong>
+
+Status:
+
+</strong>
+
+
+<span class="status-badge ${statusClass}">
+
+${agent.status}
+
+</span>
+
+</p>
+
+
+<p>
+
+<strong>
+
+Last Seen:
+
+</strong>
+
+${agent.last_seen}
+
+</p>
+
+
+<button
+
+    onclick="requestScreenshot(
+
+        '${agent.agent_id}'
+
+    )"
+
+>
+
+Request Screenshot
+
+</button>
+
+
+</div>
+
+`;
+
+}
+
+
+// ============================================================
+// Request Screenshot
+// ============================================================
+
+async function requestScreenshot(
+
+    agentId
+
+) {
+
+
+    try {
+
+
+        const response =
+
+            await fetch(
+
+                `/admin/agents/${agentId}/screenshot`,
+
+                {
+
+                    method:
+
+                        "POST",
+
+                    headers: {
+
+                        "X-API-Key":
+
+                            apiKey
+
+                    }
+
+                }
+
+            );
+
+
+        const result =
+
+            await response.json();
+
+
+        if (
+
+            !response.ok
+
+        ) {
+
+
+            throw new Error(
+
+                result.detail
+
+            );
+
+        }
+
+
+        showMessage(
+    "Screenshot request sent to " + agentId
+);
+
+await monitorScreenshotCommand(
+    result.command_id
+);
+
+
+    }
+
+
+    catch (
+
+        error
+
+    ) {
+
+
+        showMessage(
+
+            error.message
+
+        );
+
+    }
+
+}
+
+
+// ============================================================
+// Monitor Screenshot Command
+// ============================================================
+
+async function monitorScreenshotCommand(
+
+    commandId
+
+) {
+
+
+    const checkStatus =
+
+        async () => {
+
+
+            try {
+
+
+                const response =
+
+                    await fetch(
+
+                        `/admin/commands/${commandId}`,
+
+                        {
+
+                            headers: {
+
+                                "X-API-Key":
+
+                                    apiKey
+
+                            }
+
+                        }
+
+                    );
+
+
+                const command =
+
+                    await response.json();
+
+
+                if (
+
+                    command.status ===
+
+                    "uploaded"
+
+                ) {
+
+
+                    showMessage(
+    "Screenshot captured successfully."
+);
+
+await loadAgents();
+
+showPage("screenshots");
+
+showAllScreenshots();
+
+return;
+                }
+
+
+                if (
+
+                    command.status ===
+
+                    "failed"
+
+                ) {
+
+
+                    showMessage(
+
+                        "Screenshot capture failed."
+
+                    );
+
+
+                    return;
+
+                }
+
+
+                setTimeout(
+
+                    checkStatus,
+
+                    2000
+
+                );
+
+            }
+
+
+            catch (
+
+                error
+
+            ) {
+
+
+                showMessage(
+
+                    error.message
+
+                );
+
+            }
+
+        };
+
+
+    checkStatus();
+
+}
+
+
+// ============================================================
+// Load Screenshots
+// ============================================================
+
+async function loadScreenshots() {
+
+
+    if (
+
+        !apiKey
+
+    ) {
+
+        return;
+
+    }
+
+
+    try {
+
+
+        const response =
+
+            await fetch(
+
+                "/admin/screenshots",
+
+                {
+
+                    headers: {
+
+                        "X-API-Key":
+
+                            apiKey
+
+                    }
+
+                }
+
+            );
+
+
+        if (
+
+            !response.ok
+
+        ) {
+
+
+            throw new Error(
+
+                "Failed to load screenshots."
+
+            );
+
+        }
+
+
+       const screenshots =
+    await response.json();
+
+window.allScreenshots = screenshots;
+
+renderScreenshots(
+    screenshots
+);
+
+
+        document.getElementById(
+
+            "totalScreenshots"
+
+        ).innerText =
+
+            screenshots.length;
+
+
+    }
+
+
+    catch (
+
+        error
+
+    ) {
+
+
+        showMessage(
+
+            error.message
+
+        );
+
+    }
+
+}
+
+
+// ============================================================
+// Render Screenshots
+// ============================================================
+
+function renderScreenshots(
+
+    screenshots
+
+) {
+
+
+    if (
+
+        screenshots.length ===
+
+        0
+
+    ) {
+
+
+        document.getElementById(
+
+            "screenshots"
+
+        ).innerHTML =
+
+            "No screenshots available.";
+
+
+        return;
+
+    }
+
+
+   let html = `
+
+<table>
+
+<tr>
+
+<th>Agent</th>
+
+<th>Filename</th>
+
+<th>Size</th>
+
+<th>Action</th>
+
+</tr>
+`;
+
+
+    screenshots.forEach(
+
+        screenshot => {
+
+
+            const encodedFilename =
+
+                encodeURIComponent(
+
+                    screenshot.filename
+
+                );
+
+
+            html += `
+
+<tr>
+
+<td>
+
+${screenshot.agent_id}
+
+</td>
+
+<td>
+
+${screenshot.filename}
+
+</td>
+
+<td>
+
+${screenshot.size_bytes}
+bytes
+
+</td>
+
+
+<td>
+
+
+<button
+    onclick="viewScreenshot(
+        '${screenshot.agent_id}',
+        '${encodedFilename}'
+    )"
+>
+
+View
+
+</button>
+
+
+<button
+    onclick="downloadScreenshot(
+        '${screenshot.agent_id}',
+        '${encodedFilename}'
+    )"
+>
+
+Download
+
+</button>
+
+
+</td>
+
+</tr>
+
+`;
+
+        }
+
+    );
+
+
+    html += `
+
+</table>
+
+`;
+
+
+    document.getElementById(
+
+        "screenshots"
+
+    ).innerHTML =
+
+        html;
+
+}
+
+
+// ============================================================
+// View Screenshot
+// ============================================================
+
+async function viewScreenshot(
+    agentId,
+    encodedFilename
+) {
+
+
+    try {
+
+
+        const response =
+
+            await fetch(
+
+                `/admin/screenshots/${agentId}/${encodedFilename}`,
+
+                {
+
+                    headers: {
+
+                        "X-API-Key":
+
+                            apiKey
+
+                    }
+
+                }
+
+            );
+
+
+        if (
+
+            !response.ok
+
+        ) {
+
+
+            throw new Error(
+
+                "Failed to load screenshot."
+
+            );
+
+        }
+
+
+        const blob =
+
+            await response.blob();
+
+
+        const imageUrl =
+
+            URL.createObjectURL(
+
+                blob
+
+            );
+
+
+        window.open(
+
+            imageUrl,
+
+            "_blank"
+
+        );
+
+
+    }
+
+
+    catch (
+
+        error
+
+    ) {
+
+
+        showMessage(
+
+            error.message
+
+        );
+
+    }
+
+}
+
+
+// ============================================================
+// Download Screenshot
+// ============================================================
+
+async function downloadScreenshot(
+    agentId,
+    encodedFilename
+) {
+
+
+    try {
+
+
+        const response =
+
+            await fetch(
+
+                `/admin/screenshots/${agentId}/${encodedFilename}`,
+
+                {
+
+                    headers: {
+
+                        "X-API-Key":
+
+                            apiKey
+
+                    }
+
+                }
+
+            );
+
+
+        if (
+
+            !response.ok
+
+        ) {
+
+
+            throw new Error(
+
+                "Failed to download screenshot."
+
+            );
+
+        }
+
+
+        const blob =
+
+            await response.blob();
+
+
+        const downloadUrl =
+
+            URL.createObjectURL(
+
+                blob
+
+            );
+
+
+        const link =
+
+            document.createElement(
+
+                "a"
+
+            );
+
+
+        link.href =
+
+            downloadUrl;
+
+
+        link.download =
+
+            decodeURIComponent(
+
+                encodedFilename
+
+            );
+
+
+        document.body.appendChild(
+
+            link
+
+        );
+
+
+        link.click();
+
+
+        link.remove();
+
+
+        URL.revokeObjectURL(
+
+            downloadUrl
+
+        );
+
+
+    }
+
+
+    catch (
+
+        error
+
+    ) {
+
+
+        showMessage(
+
+            error.message
+
+        );
+
+    }
+
+}
+
+function showAgentScreenshots(agentId) {
+
+    // Switch to the Screenshots page
+    showPage("screenshots");
+
+    document.getElementById("screenshotTitle").innerText =
+        "Screenshots - " + agentId;
+
+    const filtered = (window.allScreenshots || []).filter(
+    screenshot => screenshot.agent_id === agentId
+);
+
+if (filtered.length === 0) {
+
+    document.getElementById("screenshots").innerHTML = `
+        <p>No screenshots found for <strong>${agentId}</strong>.</p>
+    `;
+
+    return;
+}
+
+renderScreenshots(filtered);
+}
+function showAllScreenshots() {
+
+    document.getElementById("screenshotTitle").innerText =
+        "All Screenshots";
+
+    renderScreenshots(window.allScreenshots);
+}
+function showPage(page) {
+
+    // Hide all pages
+    document.getElementById("dashboardPage").classList.remove("active");
+    document.getElementById("computersPage").classList.remove("active");
+    document.getElementById("screenshotsPage").classList.remove("active");
+
+    // Remove active class from all sidebar buttons
+    document.getElementById("navDashboard").classList.remove("active");
+    document.getElementById("navComputers").classList.remove("active");
+    document.getElementById("navScreenshots").classList.remove("active");
+
+    // Show selected page
+    if (page === "dashboard") {
+        document.getElementById("dashboardPage").classList.add("active");
+        document.getElementById("navDashboard").classList.add("active");
+    } else if (page === "computers") {
+        document.getElementById("computersPage").classList.add("active");
+        document.getElementById("navComputers").classList.add("active");
+    } else if (page === "screenshots") {
+        document.getElementById("screenshotsPage").classList.add("active");
+        document.getElementById("navScreenshots").classList.add("active");
+    }
+}
+function renderDashboardAgents(agents) {
+
+    if (agents.length === 0) {
+        document.getElementById("dashboardAgents").innerHTML =
+            "No online computers.";
+        return;
+    }
+
+    let html = `
+    <table>
+        <tr>
+            <th>Agent ID</th>
+            <th>IP Address</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+    `;
+
+    agents.forEach(agent => {
+
+        html += `
+        <tr>
+            <td>${agent.agent_id}</td>
+            <td>${agent.ip_address || "Unknown"}</td>
+            <td>
+                <span class="status-badge status-online">
+                    Online
+                </span>
+            </td>
+            <td>
+    <button onclick="requestScreenshot('${agent.agent_id}')">
+        📸 Screenshot
+    </button>
+
+    <button
+        class="secondary-button"
+        onclick="showAgentScreenshots('${agent.agent_id}')">
+        View
+    </button>
+</td>
+        </tr>
+        `;
+
+    });
+
+    html += `</table>`;
+
+    document.getElementById("dashboardAgents").innerHTML = html;
+
+}
+showPage("dashboard");
+</script>
+
+
+</body>
+
+</html>

@@ -112,3 +112,4 @@ If screenshots are missing: check screenshots
 If using HTTPS with self-signed certs: verify_ssl=False is already set in the agent client
 
 https://chatgpt.com/share/6a6860e2-dc94-83ee-817e-dd486af989e8?ogimg=plain
+https://chatgpt.com/share/6a8bbda2-11d0-83ee-8cf7-2155df14914c
